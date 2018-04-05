@@ -245,7 +245,7 @@ for i in tqdm(range(i_iter, num_iter)):
             # write test accuracy to file "train_log"
             train_log_w = csv.writer(train_log)
             log_i = [epoch_n] + sess.run([accuracy], feed_dict={inputs: mnist.test.images, outputs: mnist.test.labels, training: False})
-            train_log_w.writerow(log_i)
+            train_log_w.writerow(log_i.encode())
 
 print ("Final Accuracy: ", sess.run(accuracy, feed_dict={inputs: mnist.test.images, outputs: mnist.test.labels, training: False}), "%")
 

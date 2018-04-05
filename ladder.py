@@ -241,11 +241,11 @@ for i in tqdm(range(i_iter, num_iter)):
         saver.save(sess, 'checkpoints/model.ckpt', epoch_n)
         # print "Epoch ", epoch_n, ", Accuracy: ", sess.run(accuracy, feed_dict={inputs: mnist.test.images,
         # outputs:mnist.test.labels, training: False}), "%"
-        with open('train_log', 'ab') as train_log:
+        with open('train_log', 'a') as train_log:
             # write test accuracy to file "train_log"
             train_log_w = csv.writer(train_log)
             log_i = [epoch_n] + sess.run([accuracy], feed_dict={inputs: mnist.test.images, outputs: mnist.test.labels, training: False})
-            train_log_w.writerow(str(log_i).encode())
+            train_log_w.writerow(str(log_i))
 
 print ("Final Accuracy: ", sess.run(accuracy, feed_dict={inputs: mnist.test.images, outputs: mnist.test.labels, training: False}), "%")
 

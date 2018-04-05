@@ -18,7 +18,7 @@ starter_learning_rate = 0.02
 decay_after = 15  # epoch after which to begin learning rate decay
 
 batch_size = 100
-num_iter = int((num_examples/batch_size) * num_epochs)  # number of loop iterations
+num_iter = int((num_examples//batch_size) * num_epochs)  # number of loop iterations
 
 inputs = tf.placeholder(tf.float32, shape=(None, layer_sizes[0]))
 outputs = tf.placeholder(tf.float32)
@@ -215,7 +215,7 @@ if ckpt and ckpt.model_checkpoint_path:
     # if checkpoint exists, restore the parameters and set epoch_n and i_iter
     saver.restore(sess, ckpt.model_checkpoint_path)
     epoch_n = int(ckpt.model_checkpoint_path.split('-')[1])
-    i_iter = (epoch_n+1) * (num_examples/batch_size)
+    i_iter = (epoch_n + 1) * (num_examples // batch_size)
     print ("Restored Epoch ", epoch_n)
 else:
     # no checkpoint exists. create checkpoints directory if it does not exist.
@@ -230,8 +230,8 @@ print ("Initial Accuracy: ", sess.run(accuracy, feed_dict={inputs: mnist.test.im
 for i in tqdm(range(i_iter, num_iter)):
     images, labels = mnist.train.next_batch(batch_size)
     sess.run(train_step, feed_dict={inputs: images, outputs: labels, training: True})
-    if (i > 1) and ((i+1) % (num_iter/num_epochs) == 0):
-        epoch_n = i/(num_examples/batch_size)
+    if (i > 1) and ((i + 1) % (num_iter // num_epochs) == 0):
+        epoch_n = i // (num_examples // batch_size)
         if (epoch_n+1) >= decay_after:
             # decay learning rate
             # learning_rate = starter_learning_rate * ((num_epochs - epoch_n) / (num_epochs - decay_after))
@@ -239,7 +239,8 @@ for i in tqdm(range(i_iter, num_iter)):
             ratio = max(0, ratio / (num_epochs - decay_after))
             sess.run(learning_rate.assign(starter_learning_rate * ratio))
         saver.save(sess, 'checkpoints/model.ckpt', epoch_n)
-        # print "Epoch ", epoch_n, ", Accuracy: ", sess.run(accuracy, feed_dict={inputs: mnist.test.images, outputs:mnist.test.labels, training: False}), "%"
+        # print "Epoch ", epoch_n, ", Accuracy: ", sess.run(accuracy, feed_dict={inputs: mnist.test.images,
+        # outputs:mnist.test.labels, training: False}), "%"
         with open('train_log', 'ab') as train_log:
             # write test accuracy to file "train_log"
             train_log_w = csv.writer(train_log)
